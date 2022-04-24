@@ -139,6 +139,9 @@ import (
 //    go run main.go register --filename=dune.bleve
 //    go run main.go serve
 
+// Assume you setup the following environment variable:
+//    export BLEVE_SERVER_ADDRESS=127.0.0.1:8001
+
 func main() {
 	// Load up our `environment variables` from our operating system.
 	addr := os.Getenv("BLEVE_SERVER_ADDRESS") // Example Value: 127.0.0.1:8001
@@ -152,26 +155,26 @@ func main() {
 	if err != nil {
 		log.Fatal("doIndex err:", err)
 	}
-	err := rpc.Index("dune.bleve", "987654321", []byte("The spice is vital for space travel"))
+	err = rpc.Index("dune.bleve", "987654321", []byte("The spice is vital for space travel"))
 	if err != nil {
 		log.Fatal("doIndex err:", err)
 	}
 
 	// Try querrying...
 
-	uuids, err := s.Query("dune.bleve", "life")
+	uuids, err := rpc.Query("dune.bleve", "life")
 	if err != nil {
 		log.Fatal("doQuery err:", err)
 	}
 	fmt.Println("UUIDs:", uuids) // OUTPUT: [123456789]
 
-	uuids, err = s.Query("dune.bleve", "space travel")
+	uuids, err = rpc.Query("dune.bleve", "space travel")
 	if err != nil {
 		log.Fatal("doQuery err:", err)
 	}
 	fmt.Println("UUIDs:", uuids) // OUTPUT: [987654321]
 
-	uuids, err = s.Query("dune.bleve", "spice")
+	uuids, err = rpc.Query("dune.bleve", "spice")
 	if err != nil {
 		log.Fatal("doQuery err:", err)
 	}

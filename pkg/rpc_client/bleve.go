@@ -2,19 +2,26 @@ package rpc_client
 
 import (
 	// "errors"
+	"encoding/json"
 	"log"
 
 	"github.com/bartmika/bleve-server/pkg/dtos"
 )
 
-func (s *BleveService) Index(filename string, identifier string, data []byte) error {
+func (s *BleveService) Index(filename string, identifier string, data any) error {
+	dataBin, err := json.Marshal(data)
+	if err != nil {
+		log.Println("RPC CLIENT RPC CLIENT ERROR | BleveService | Marshal | err", err)
+		return err
+	}
+
 	req := &dtos.IndexRequestDTO{
-		Filename: filename,
+		Filename:   filename,
 		Identifier: identifier,
-		Data:       data,
+		Data:       dataBin,
 	}
 	var reply dtos.IndexResponseDTO
-	err := s.call("RPC.Index", req, &reply)
+	err = s.call("RPC.Index", req, &reply)
 	if err != nil {
 		log.Println("RPC CLIENT RPC CLIENT ERROR | BleveService | Index | err", err)
 		return err
@@ -25,7 +32,7 @@ func (s *BleveService) Index(filename string, identifier string, data []byte) er
 func (s *BleveService) Query(filename string, search string) (*[]string, error) {
 	req := &dtos.QueryRequestDTO{
 		Filename: filename,
-		Search:     search,
+		Search:   search,
 	}
 	var reply dtos.QueryResponseDTO
 	err := s.call("RPC.Query", req, &reply)

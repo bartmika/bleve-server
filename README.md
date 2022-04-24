@@ -15,7 +15,7 @@ As a result, this stand-alone server was created to allow multiple programs to a
 1. Clone the library to your computer.
 
   ```bash
-  git clone git@github.com:bartmika/bleve-server.git
+  git clone https://github.com/bartmika/bleve-server.git
   cd bleve-server
   ```
 
@@ -124,7 +124,59 @@ go run main.go query --filename=dune.bleve --search="spice"
 Here is a sample file of accessing `bleve-server` over `rpc` in your code:
 
 ```go
-//TODO: Implement.
+package main
+
+import (
+	"fmt"
+	"log"
+	"os"
+	"time"
+
+	remote "github.com/bartmika/bleve-server/pkg/rpc_client"
+)
+
+// Assume you ran the following commands in your `bleve-server` project:
+//    go run main.go register --filename=dune.bleve
+//    go run main.go serve
+
+func main() {
+	// Load up our `environment variables` from our operating system.
+	addr := os.Getenv("BLEVE_SERVER_ADDRESS") // Example Value: 127.0.0.1:8001
+
+	// Initialize the RPC client.
+	rpc := remote.New(addr, 3, 15*time.Second)
+
+	// Index the following data...
+
+	err := rpc.Index("dune.bleve", "123456789", []byte("The spice extends life"))
+	if err != nil {
+		log.Fatal("doIndex err:", err)
+	}
+	err := rpc.Index("dune.bleve", "987654321", []byte("The spice is vital for space travel"))
+	if err != nil {
+		log.Fatal("doIndex err:", err)
+	}
+
+	// Try querrying...
+
+	uuids, err := s.Query("dune.bleve", "life")
+	if err != nil {
+		log.Fatal("doQuery err:", err)
+	}
+	fmt.Println("UUIDs:", uuids) // OUTPUT: [123456789]
+
+	uuids, err = s.Query("dune.bleve", "space travel")
+	if err != nil {
+		log.Fatal("doQuery err:", err)
+	}
+	fmt.Println("UUIDs:", uuids) // OUTPUT: [987654321]
+
+	uuids, err = s.Query("dune.bleve", "spice")
+	if err != nil {
+		log.Fatal("doQuery err:", err)
+	}
+	fmt.Println("UUIDs:", uuids) // OUTPUT: [123456789, 987654321]
+}
 ```
 
 ## Contributing

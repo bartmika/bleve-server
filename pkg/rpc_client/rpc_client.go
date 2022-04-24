@@ -16,7 +16,7 @@ type BleveService struct {
 
 func New(addr string, retryLimit uint8, delayDuration time.Duration) *BleveService {
 	if addr == "" {
-		log.Fatal("RPC CLIENT ERROR | BleveService | Address not set for this foundation service!")
+		log.Fatal("RPC CLIENT ERROR | BleveService | Address not set for this bleve service!")
 	}
 
 	client, err := rpc.DialHTTP("tcp", addr)

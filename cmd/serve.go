@@ -31,7 +31,7 @@ var serveCmd = &cobra.Command{
 }
 
 func doServe(cmd *cobra.Command, args []string) {
-	log.Println("Initializing foundation service...")
+	log.Println("Initializing bleve service...")
 
 	// Extract our unix domain socket address used by this app and delete the
 	// File if it prevously exists.

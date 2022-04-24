@@ -29,7 +29,7 @@ func (s *BleveService) Index(filename string, identifier string, data any) error
 	return nil
 }
 
-func (s *BleveService) Query(filename string, search string) (*[]string, error) {
+func (s *BleveService) Query(filename string, search string) ([]string, error) {
 	req := &dtos.QueryRequestDTO{
 		Filename: filename,
 		Search:   search,
@@ -40,5 +40,5 @@ func (s *BleveService) Query(filename string, search string) (*[]string, error) 
 		log.Println("RPC CLIENT RPC CLIENT ERROR | BleveService | Query | err", err)
 		return nil, err
 	}
-	return &reply.UUIDs, nil
+	return reply.UUIDs, nil
 }

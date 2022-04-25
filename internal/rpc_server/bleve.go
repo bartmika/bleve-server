@@ -4,6 +4,16 @@ import (
 	"github.com/bartmika/bleve-server/pkg/dtos"
 )
 
+func (rpc *RPC) Register(req *dtos.RegisterRequestDTO, res *dtos.RegisterResponseDTO) error {
+	err := rpc.Controller.Register(req.Filenames)
+	if err != nil {
+		return err
+	}
+
+	*res = dtos.RegisterResponseDTO{}
+	return nil
+}
+
 func (rpc *RPC) Index(req *dtos.IndexRequestDTO, res *dtos.IndexResponseDTO) error {
 	err := rpc.Controller.Index(req.Filename, req.Identifier, string(req.Data))
 	if err != nil {

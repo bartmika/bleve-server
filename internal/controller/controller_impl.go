@@ -50,6 +50,36 @@ func New() (*controllerImpl, error) {
 	}, nil
 }
 
+func (c *controllerImpl) Register(filenames []string) error {
+	for _, filename := range filenames {
+		// Save everything into the db folder.
+		filepath := "db/" + filename
+
+		// Check if the filename already exists in our `indices` and if it
+		// does then that means we have previously registered that filename
+		// with an index so we can skip this loop and continue processing the
+		// next filename.
+		if _, ok := c.indices[filename]; ok {
+			log.Println("Already registered index:", filename)
+			continue
+		}
+
+		// Create an index for the particular filename.
+		index, err := bleve.New(filepath, c.mapping)
+		if err != nil {
+			return err
+		}
+		// Open the index and attach it to our running application.
+		index, err = bleve.Open(filepath)
+		if err != nil {
+			return err
+		}
+		c.indices[filename] = index
+		log.Println("Registered index:", filename)
+	}
+	return nil
+}
+
 func (c *controllerImpl) Index(filename string, identifier string, data interface{}) error {
 	tenantIndex, ok := c.indices[filename]
 	if !ok {

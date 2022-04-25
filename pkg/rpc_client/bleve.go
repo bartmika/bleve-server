@@ -8,6 +8,19 @@ import (
 	"github.com/bartmika/bleve-server/pkg/dtos"
 )
 
+func (s *BleveService) RegisterFilenames(filenames []string) error {
+	req := &dtos.RegisterRequestDTO{
+		Filenames: filenames,
+	}
+	var reply dtos.RegisterResponseDTO
+	err := s.call("RPC.Register", req, &reply)
+	if err != nil {
+		log.Println("RPC CLIENT RPC CLIENT ERROR | BleveService | Register | err", err)
+		return err
+	}
+	return nil
+}
+
 func (s *BleveService) Index(filename string, identifier string, data any) error {
 	dataBin, err := json.Marshal(data)
 	if err != nil {

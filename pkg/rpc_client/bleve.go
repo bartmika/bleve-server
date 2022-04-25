@@ -8,7 +8,7 @@ import (
 	"github.com/bartmika/bleve-server/pkg/dtos"
 )
 
-func (s *BleveService) RegisterFilenames(filenames []string) error {
+func (s *BleveService) Register(filenames []string) error {
 	req := &dtos.RegisterRequestDTO{
 		Filenames: filenames,
 	}

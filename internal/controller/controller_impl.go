@@ -69,13 +69,9 @@ func (c *controllerImpl) Register(filenames []string) error {
 		if err != nil {
 			return err
 		}
-		// Open the index and attach it to our running application.
-		index, err = bleve.Open(filepath)
-		if err != nil {
-			return err
-		}
+
 		c.indices[filename] = index
-		log.Println("Registered index:", filename)
+		log.Println("New index:", filename)
 	}
 	return nil
 }

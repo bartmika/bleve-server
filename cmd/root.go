@@ -12,19 +12,27 @@ import (
 
 // Application environment variables
 var (
-	applicationAddress string
+	applicationAddress           string
+	applicationHomeDirectoryPath string
 )
 
 func init() {
 	// Load up our `environment variables` from our operating system.
 	appAddress := os.Getenv("BLEVE_SERVER_ADDRESS")
+	appHomePath := os.Getenv("BLEVE_SERVER_HOME_DIRECTORY_PATH")
+	if appHomePath == "" {
+		appHomePath = "db" // Set `db folder in the current location of the app.`
+	}
 
 	// Attach environment variables to system.
 	rootCmd.PersistentFlags().StringVar(&applicationAddress, "appAddress", appAddress, "The applications address.")
+	rootCmd.PersistentFlags().StringVar(&applicationHomeDirectoryPath, "appHomePath", appHomePath, "The path to the directory where this application saves the local files.")
 
 	viper.BindPFlag("appAddress", rootCmd.PersistentFlags().Lookup("appAddress"))
+	viper.BindPFlag("appHomePath", rootCmd.PersistentFlags().Lookup("appHomePath"))
 
 	viper.SetDefault("appAddress", appAddress)
+	viper.SetDefault("appHomePath", appHomePath)
 }
 
 var rootCmd = &cobra.Command{

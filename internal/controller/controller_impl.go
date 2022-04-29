@@ -10,12 +10,13 @@ import (
 )
 
 type controllerImpl struct {
-	mapping *mapping.IndexMappingImpl
-	index   bleve.Index
-	indices map[string]bleve.Index
+	directoryPath string
+	mapping       *mapping.IndexMappingImpl
+	index         bleve.Index
+	indices       map[string]bleve.Index
 }
 
-func New() (*controllerImpl, error) {
+func New(directoryPath string) (*controllerImpl, error) {
 	mapping := bleve.NewIndexMapping()
 
 	// Variable will keep a map of a pointer to all the open `index` files.
@@ -24,7 +25,7 @@ func New() (*controllerImpl, error) {
 	// Iterate through the contents of the 'db' folder (if it exists) and
 	// get the names of the directories that are in. If the 'db' directory does
 	// not exist then skip this whole step.
-	files, err := ioutil.ReadDir("db")
+	files, err := ioutil.ReadDir(directoryPath)
 	if err == nil {
 		for _, file := range files {
 			// Only open up directories.
@@ -33,9 +34,11 @@ func New() (*controllerImpl, error) {
 				directoryName := file.Name()
 
 				// The following code will open up the bleve index.
-				index, err := bleve.Open("db/" + directoryName)
+				index, err := bleve.Open(directoryPath + "/" + directoryName)
 				if err != nil {
-					return nil, err
+					// Skip the file since it's not a "bleve" file we can
+					// use for our application.
+					continue
 				}
 
 				indices[directoryName] = index
@@ -45,22 +48,22 @@ func New() (*controllerImpl, error) {
 	}
 
 	return &controllerImpl{
-		mapping: mapping,
-		indices: indices,
+		directoryPath: directoryPath,
+		mapping:       mapping,
+		indices:       indices,
 	}, nil
 }
 
 func (c *controllerImpl) Register(filenames []string) error {
 	for _, filename := range filenames {
 		// Save everything into the db folder.
-		filepath := "db/" + filename
+		filepath := c.directoryPath + "/" + filename
 
 		// Check if the filename already exists in our `indices` and if it
 		// does then that means we have previously registered that filename
 		// with an index so we can skip this loop and continue processing the
 		// next filename.
 		if _, ok := c.indices[filename]; ok {
-			log.Println("Already registered index:", filename)
 			continue
 		}
 

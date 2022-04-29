@@ -29,6 +29,7 @@ As a result, this stand-alone server was created to allow multiple programs to a
 
   ```bash
   export BLEVE_SERVER_ADDRESS=127.0.0.1:8001
+  export BLEVE_SERVER_HOME_DIRECTORY_PATH=""  # Leave blank if you want to save app files in the same folder as your application, else if you want to save somewhere else (ex: "/tmp") then set this value.
   ```
 
 4. Verify the server starts up.

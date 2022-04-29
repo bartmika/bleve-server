@@ -23,7 +23,7 @@ var registerCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		// Save everything into the db folder.
-		filepath := "db/" + filename
+		filepath := applicationHomeDirectoryPath + "/" + filename
 
 		// open a new index
 		mapping := bleve.NewIndexMapping()

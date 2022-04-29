@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
 	"github.com/bartmika/bleve-server/internal/controller"
 	bleve_rpc "github.com/bartmika/bleve-server/internal/rpc_server"
@@ -33,17 +32,13 @@ var serveCmd = &cobra.Command{
 func doServe(cmd *cobra.Command, args []string) {
 	log.Println("Initializing bleve service...")
 
-	// Extract our unix domain socket address used by this app and delete the
-	// File if it prevously exists.
-	addr := viper.GetString("appAddress")
-
-	tcpAddr, err := net.ResolveTCPAddr("tcp", addr)
+	tcpAddr, err := net.ResolveTCPAddr("tcp", applicationAddress)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Initialize our application controller.
-	c, err := controller.New()
+	c, err := controller.New(applicationHomeDirectoryPath)
 	if err != nil {
 		log.Fatal(err)
 	}

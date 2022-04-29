@@ -30,7 +30,14 @@ var serveCmd = &cobra.Command{
 }
 
 func doServe(cmd *cobra.Command, args []string) {
-	log.Println("Initializing bleve service...")
+	path, err := os.Executable()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Initializing address for", applicationAddress)
+	log.Println("Executing from", path)
+	log.Println("Opening indices at", applicationHomeDirectoryPath)
 
 	tcpAddr, err := net.ResolveTCPAddr("tcp", applicationAddress)
 	if err != nil {

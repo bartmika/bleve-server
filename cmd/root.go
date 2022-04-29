@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -21,7 +22,11 @@ func init() {
 	appAddress := os.Getenv("BLEVE_SERVER_ADDRESS")
 	appHomePath := os.Getenv("BLEVE_SERVER_HOME_DIRECTORY_PATH")
 	if appHomePath == "" {
-		appHomePath = "db" // Set `db folder in the current location of the app.`
+		path, err := os.Getwd()
+		if err != nil {
+			log.Fatal(err)
+		}
+		appHomePath = path + "/db" // Set `db folder in the current location of the app.`
 	}
 
 	// Attach environment variables to system.

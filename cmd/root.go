@@ -20,6 +20,9 @@ var (
 func init() {
 	// Load up our `environment variables` from our operating system.
 	appAddress := os.Getenv("BLEVE_SERVER_ADDRESS")
+	if appAddress == "" {
+		appAddress = "127.0.0.1:8001" // Set default IP address to localhost with port 8001.
+	}
 	appHomePath := os.Getenv("BLEVE_SERVER_HOME_DIRECTORY_PATH")
 	if appHomePath == "" {
 		path, err := os.Getwd()

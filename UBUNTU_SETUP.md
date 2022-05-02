@@ -5,7 +5,7 @@
 On your *server*, login as your administrator and create the `~/go/bin` folder which you can upload your apps to.
 
 ```bash
-mkdir -R ~/go/bin
+mkdir -p ~/go/bin
 ```
 
 On your *local machine* run the following:

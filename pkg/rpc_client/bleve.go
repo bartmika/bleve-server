@@ -15,7 +15,7 @@ func (s *BleveService) Register(filenames []string) error {
 	var reply dtos.RegisterResponseDTO
 	err := s.call("RPC.Register", req, &reply)
 	if err != nil {
-		log.Println("RPC CLIENT RPC CLIENT ERROR | BleveService | Register | err", err)
+		log.Println("rpc_client | RPC.Registe | err", err)
 		return err
 	}
 	return nil
@@ -24,7 +24,7 @@ func (s *BleveService) Register(filenames []string) error {
 func (s *BleveService) Index(filename string, identifier string, data any) error {
 	dataBin, err := json.Marshal(data)
 	if err != nil {
-		log.Println("RPC CLIENT RPC CLIENT ERROR | BleveService | Marshal | err", err)
+		log.Println("rpc_client | Marshal | err", err)
 		return err
 	}
 
@@ -36,7 +36,7 @@ func (s *BleveService) Index(filename string, identifier string, data any) error
 	var reply dtos.IndexResponseDTO
 	err = s.call("RPC.Index", req, &reply)
 	if err != nil {
-		log.Println("RPC CLIENT RPC CLIENT ERROR | BleveService | Index | err", err)
+		log.Println("rpc_client | RPC.Index | err", err)
 		return err
 	}
 	return nil
@@ -50,8 +50,22 @@ func (s *BleveService) Query(filename string, search string) ([]string, error) {
 	var reply dtos.QueryResponseDTO
 	err := s.call("RPC.Query", req, &reply)
 	if err != nil {
-		log.Println("RPC CLIENT RPC CLIENT ERROR | BleveService | Query | err", err)
+		log.Println("rpc_client | RPC.Query | err", err)
 		return nil, err
 	}
 	return reply.UUIDs, nil
+}
+
+func (s *BleveService) Delete(filename string, identifier string) error {
+	req := &dtos.DeleteRequestDTO{
+		Filename:   filename,
+		Identifier: identifier,
+	}
+	var reply dtos.DeleteResponseDTO
+	err := s.call("RPC.Index", req, &reply)
+	if err != nil {
+		log.Println("rpc_client | RPC.Index | err", err)
+		return err
+	}
+	return nil
 }

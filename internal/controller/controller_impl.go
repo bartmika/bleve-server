@@ -105,6 +105,14 @@ func (c *controllerImpl) Query(filename string, search string) ([]string, error)
 	return arr[:], err
 }
 
+func (c *controllerImpl) Delete(filename string, identifier string) error {
+	tenantIndex, ok := c.indices[filename]
+	if !ok {
+		return errors.New("index D.N.E. for filename")
+	}
+	return tenantIndex.Delete(identifier)
+}
+
 func (c *controllerImpl) Close() {
 	for key, tenantIndex := range c.indices {
 		tenantIndex.Close()

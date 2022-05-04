@@ -33,24 +33,25 @@ If you have an attached `volume` to your `droplet` then you can save all the `bl
 Start by creating a default folder and setting correct permissions:
 
 ```bash
-sudo mkdir /mnt/volume_tor1_04/bleve
-sudo chown techops /mnt/volume_tor1_04/bleve
-sudo chgrp techops /mnt/volume_tor1_04/bleve
-sudo chmod u+rwx /mnt/volume_tor1_04/bleve
+sudo mkdir /mnt/volume_tor1_01/bleve
+sudo chown techops /mnt/volume_tor1_01/bleve
+sudo chgrp techops /mnt/volume_tor1_01/bleve
+sudo chmod u+rwx /mnt/volume_tor1_01/bleve
 ```
 
 Next setup the environment variable:
 
 ```bash
-export BLEVE_SERVER_HOME_DIRECTORY_PATH="/mnt/volume_tor1_04/bleve"
+export BLEVE_SERVER_HOME_DIRECTORY_PATH="/mnt/volume_tor1_01/bleve"
 ```
 
 Finally run the server, create a test index and verify it exists:
 
 ```bash
+cd ~/go/bin
 ./bleve-server serve
 ./bleve-server register --filename="testtenant"
-ls -alh /mnt/volume_tor1_04/bleve # You should see `testtenant` when you run this command!
+ls -alh /mnt/volume_tor1_01/bleve # You should see `testtenant` when you run this command!
 ```
 
 ## Part 3: Linux Startup / Shutdown
@@ -69,7 +70,7 @@ ls -alh /mnt/volume_tor1_04/bleve # You should see `testtenant` when you run thi
     ```bash
     #!/bin/bash
     export BLEVE_SERVER_ADDRESS=127.0.0.1:8001
-    export BLEVE_SERVER_HOME_DIRECTORY_PATH="/mnt/volume_tor1_04/bleve"
+    export BLEVE_SERVER_HOME_DIRECTORY_PATH="/mnt/volume_tor1_01/bleve"
     exec /home/techops/go/bin/bleve-server serve
     ```
 
@@ -117,10 +118,10 @@ This section explains how to integrate our project with ``systemd`` so our opera
     Group=techops
     PermissionsStartOnly=True
     RuntimeDirectoryMode=0775
-    ReadWritePaths=/mnt/volume_tor1_04/bleve  # This is how you grant read/write access to all files/directories inside a particular location to your application.
+    ReadWritePaths=/mnt/volume_tor1_01/bleve  # This is how you grant read/write access to all files/directories inside a particular location to your application.
 
     [Automount]
-    Where=/mnt/volume_tor1_04/bleve  # Automount forces systemctl to mount this location for our service's usage.
+    Where=/mnt/volume_tor1_01/bleve  # Automount forces systemctl to mount this location for our service's usage.
 
     [Install]
     WantedBy=multi-user.target
@@ -174,7 +175,7 @@ If you have another `droplet` in the same region as this `droplet`, then we can 
     ```bash
     #!/bin/bash
     export BLEVE_SERVER_ADDRESS=yyy.yyy.yyyy.yyy:33001
-    export BLEVE_SERVER_HOME_DIRECTORY_PATH="/mnt/volume_tor1_04/bleve"
+    export BLEVE_SERVER_HOME_DIRECTORY_PATH="/mnt/volume_tor1_01/bleve"
     exec /home/techops/go/bin/bleve-server serve
     ```
 

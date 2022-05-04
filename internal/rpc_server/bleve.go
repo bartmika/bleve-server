@@ -35,3 +35,13 @@ func (rpc *RPC) Query(req *dtos.QueryRequestDTO, res *dtos.QueryResponseDTO) err
 	}
 	return nil
 }
+
+func (rpc *RPC) Delete(req *dtos.DeleteRequestDTO, res *dtos.DeleteResponseDTO) error {
+	err := rpc.Controller.Delete(req.Filename, req.Identifier)
+	if err != nil {
+		return err
+	}
+
+	*res = dtos.DeleteResponseDTO{}
+	return nil
+}

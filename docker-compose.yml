@@ -1,0 +1,28 @@
+# React Development
+# This Docker configuration will allow running a node server in the background
+# hot reloading from the developers machine to the node container.
+#
+# Special Thanks:
+# https://gist.github.com/przbadu/929fc2b0d5d4cd78a5efe76d37f891b6
+#
+
+version: '3'
+services:
+  app:
+    stdin_open: true
+    environment:
+        BLEVE_SERVER_ADDRESS: 0.0.0.0:8001
+        BLEVE_SERVER_HOME_DIRECTORY_PATH: /db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    volumes:
+      - bleve_server_vol:/db
+
+volumes:
+    bleve_server_vol:
+
+# Usage:
+# docker-compose up

@@ -11,7 +11,7 @@ Currently [`bleve`](https://github.com/blevesearch/bleve) does not support read/
 
 As a result, this stand-alone server was created to allow multiple programs to access without problem. For your Golang program to access `bleve`, simply make `remote procedure calls` to this server.
 
-## Installation
+## Installation (Golang)
 1. Clone the library to your computer.
 
   ```bash
@@ -36,6 +36,23 @@ As a result, this stand-alone server was created to allow multiple programs to a
 
   ```bash
   go run main.go serve
+  ```
+
+## Installation (Docker)
+
+Alternatively, to start the server using `docker` then follow these steps.
+
+1. Clone the library to your computer.
+
+  ```bash
+  git clone https://github.com/bartmika/bleve-server.git
+  cd bleve-server
+  ```
+
+2. Start the server.
+
+  ```bash
+  docker-compose up
   ```
 
 ## Usage

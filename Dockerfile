@@ -1,4 +1,7 @@
-# Build Stage
+#-------------#
+# Build Stage #
+#-------------#
+
 # First pull Golang image
 FROM golang:1.18-alpine as build-env
 
@@ -13,7 +16,10 @@ WORKDIR $GOPATH/src/bartmika/$APP_NAME
 # Budild application
 RUN CGO_ENABLED=0 go build -v -o /$APP_NAME $GOPATH/src/bartmika/$APP_NAME/$CMD_PATH
 
-# Run Stage
+#-----------#
+# Run Stage #
+#-----------#
+
 FROM alpine:3.14
 
 # Set environment variable
@@ -28,18 +34,13 @@ EXPOSE 8001
 # Start app
 CMD ["./bleve-server", "serve"]
 
-# BUILD
-# docker build --rm -t bleve-server .
-
-# EXECUTE
-# docker run -d -p 8001:8001 -e BLEVE_SERVER_ADDRESS="0.0.0.0:8001" bleve-server
-
 # SPECIAL THANKS:
 # https://www.bacancytechnology.com/blog/dockerize-golang-application
 
-# docker run -d \
-#     --name=bleve-server \
-#     -p 8001:8001 \
-#     -e BLEVE_SERVER_ADDRESS="0.0.0.0:8001" \
-#     -e BLEVE_SERVER_HOME_DIRECTORY_PATH="/db" \
-#     bleve-server
+#-------------------------------------------------------------------------------
+# BUILD AN IMAGE.
+# docker build -t bleve-server:1.0 .
+
+# RUN A CONTAINER.
+# docker run -d -p 8001:8001 --name=bleve-server -e BLEVE_SERVER_ADDRESS="0.0.0.0:8001" bleve-server:1.0
+#---------------------------------------------------------------------------------------------------------

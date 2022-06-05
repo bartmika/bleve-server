@@ -1,11 +1,5 @@
-# React Development
-# This Docker configuration will allow running a node server in the background
-# hot reloading from the developers machine to the node container.
-#
-# Special Thanks:
-# https://gist.github.com/przbadu/929fc2b0d5d4cd78a5efe76d37f891b6
-#
-
+# DOCKERFILE IS USED IF YOU WOULD LIKE TO SETUP A STAND ALONE CONTAINER FOR YOUR
+# DEVELOPMENT NEEDS WHICH INCLUDES LOCAL STORAGE.
 version: '3'
 services:
   app:
@@ -19,10 +13,7 @@ services:
     ports:
       - "8001:8001"
     volumes:
-      - bleve_server_vol:/db
+      - vol:/db
 
 volumes:
-    bleve_server_vol:
-
-# Usage:
-# docker-compose up
+    vol:

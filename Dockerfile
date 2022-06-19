@@ -37,10 +37,10 @@ CMD ["./bleve-server", "serve"]
 # SPECIAL THANKS:
 # https://www.bacancytechnology.com/blog/dockerize-golang-application
 
-#-------------------------------------------------------------------------------
-# BUILD AN IMAGE.
-# docker build -t bleve-server:1.0 .
+#-------------------------------------------------------------------------------------------------------------
+# HOWTO: BUILD AN IMAGE.
+# docker build -t bmika/bleve-server:1.0 .
 
-# RUN A CONTAINER.
-# docker run -d -p 8001:8001 --name=bleve-server -e BLEVE_SERVER_ADDRESS="0.0.0.0:8001" bleve-server:1.0
-#---------------------------------------------------------------------------------------------------------
+# HOWTO: RUN A CONTAINER.
+# docker run -d -p 8001:8001 --name=bleve-server -e BLEVE_SERVER_ADDRESS="0.0.0.0:8001" bmika/bleve-server:1.0
+#--------------------------------------------------------------------------------------------------------------

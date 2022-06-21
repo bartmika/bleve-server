@@ -13,8 +13,8 @@ ENV CMD_PATH main.go
 COPY . $GOPATH/src/bartmika/$APP_NAME
 WORKDIR $GOPATH/src/bartmika/$APP_NAME
 
-# Budild application
-RUN CGO_ENABLED=0 go build -v -o /$APP_NAME $GOPATH/src/bartmika/$APP_NAME/$CMD_PATH
+# Budild Linux 64bit application
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o /$APP_NAME $GOPATH/src/bartmika/$APP_NAME/$CMD_PATH
 
 #-----------#
 # Run Stage #

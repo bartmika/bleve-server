@@ -94,7 +94,10 @@ func (c *controllerImpl) Query(filename string, search string) ([]string, error)
 	}
 
 	query := bleve.NewQueryStringQuery(search)
-	searchRequest := bleve.NewSearchRequest(query)
+
+	// DEVELOPERS NOTE: Increase the limit from `10` to `1 million` so in essence
+	// we return unrestricted number of entries.
+	searchRequest := bleve.NewSearchRequestOptions(query, 1_000_000_000, 0, false)
 	searchResults, err := tenantIndex.Search(searchRequest)
 
 	var arr []string

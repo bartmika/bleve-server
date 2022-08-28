@@ -1,0 +1,20 @@
+version: '3'
+
+tasks:
+  start:
+    cmds:
+      - docker-compose -f docker-compose.yml up
+
+  end:
+    cmds:
+      - docker-compose -f docker-compose.yml down
+
+  console:
+    cmds:
+      - docker exec -it bleve-server bash
+
+  deploy:
+    cmds:
+      - docker build -t bmika/bleve-server:1.0 .
+      - docker tag bmika/bleve-server:1.0 bmika/bleve-server:1.0
+      - docker push bmika/bleve-server:1.0

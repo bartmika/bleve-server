@@ -1,4 +1,16 @@
+# Docker related files.
 bin
 .dockerignore
+.env
 Dockerfile
 Dockerfile.dev
+docker-compose.yml
+dev.docker-compose.yml
+dev.Dockerfile
+
+# Non-docker related files.
+.git
+bin
+private.md
+private.txt
+UBUNTU_SETUP.md

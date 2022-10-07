@@ -15,15 +15,15 @@ tasks:
 
   deploy:
     cmds:
-      - docker build -t bmika/bleve-server:1.0 .
-      - docker tag bmika/bleve-server:1.0 bmika/bleve-server:1.0
-      - docker push bmika/bleve-server:1.0
+      - docker build -t bartmika/bleve-server:latest .
+      - docker tag bartmika/bleve-server:latest bartmika/bleve-server:latest
+      - docker push bartmika/bleve-server:latest
 
   # The following task will perform a vulnerability scan on our golang project and display any issues found.
   scan:
     cmds:
       - govulncheck ./...
-      - trivy image bmika/bleve-server:1.0
+      - trivy image bartmika/bleve-server:latest
       - trivy repo https://github.com/bartmika/bleve-server.git
 
   # The following command will upgade all the dependencies in this project.

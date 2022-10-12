@@ -5,7 +5,7 @@ services:
   app:
     stdin_open: true
     container_name: bleve-server
-    image: bmika/bleve-server:1.0
+    image: bartmika/bleve-server:1.0
     environment:
         BLEVE_SERVER_ADDRESS: 0.0.0.0:8001
         BLEVE_SERVER_HOME_DIRECTORY_PATH: /db

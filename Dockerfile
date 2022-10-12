@@ -39,8 +39,8 @@ CMD ["./bleve-server", "serve"]
 
 #-------------------------------------------------------------------------------------------------------------
 # HOWTO: BUILD AN IMAGE.
-# docker build -t bmika/bleve-server:1.0 .
+# docker build -t bartmika/bleve-server:1.0 .
 
 # HOWTO: RUN A CONTAINER.
-# docker run -d -p 8001:8001 --name=bleve-server -e BLEVE_SERVER_ADDRESS="0.0.0.0:8001" bmika/bleve-server:1.0
+# docker run -d -p 8001:8001 --name=bleve-server -e BLEVE_SERVER_ADDRESS="0.0.0.0:8001" bartmika/bleve-server:1.0
 #--------------------------------------------------------------------------------------------------------------

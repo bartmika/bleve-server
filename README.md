@@ -52,13 +52,13 @@ Alternatively, to start the server using `docker` then follow these steps.
 2. Build the docker image.
 
 ```bash
-docker build -t bartmika/bleve-server:1.0 .
+docker build -t bartmika/bleve-server:latest .
 ```
 
 3. Run a docker container.
 
 ```bash
-docker run -d -p 8001:8001 --name=bleve-server -e BLEVE_SERVER_ADDRESS="0.0.0.0:8001" -e BLEVE_SERVER_HOME_DIRECTORY_PATH="/db" bartmika/bleve-server:1.0
+docker run -d -p 8001:8001 --name=bleve-server -e BLEVE_SERVER_ADDRESS="0.0.0.0:8001" -e BLEVE_SERVER_HOME_DIRECTORY_PATH="/db" bartmika/bleve-server:latest
 ```
 
 4. Alternatively you can use `docker-compose` as well via:

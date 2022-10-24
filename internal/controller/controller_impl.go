@@ -3,20 +3,21 @@ package controller
 import (
 	"errors"
 	"io/ioutil"
-	"log"
 
+	"github.com/rs/zerolog"
 	"github.com/blevesearch/bleve/v2"
 	"github.com/blevesearch/bleve/v2/mapping"
 )
 
 type controllerImpl struct {
+	Logger        zerolog.Logger
 	directoryPath string
 	mapping       *mapping.IndexMappingImpl
 	index         bleve.Index
 	indices       map[string]bleve.Index
 }
 
-func New(directoryPath string) (*controllerImpl, error) {
+func New(directoryPath string, logger zerolog.Logger) (*controllerImpl, error) {
 	mapping := bleve.NewIndexMapping()
 
 	// Variable will keep a map of a pointer to all the open `index` files.
@@ -42,12 +43,13 @@ func New(directoryPath string) (*controllerImpl, error) {
 				}
 
 				indices[directoryName] = index
-				log.Println("Opened index:", directoryName)
+				logger.Info().Msgf("opened index: %s", directoryName)
 			}
 		}
 	}
 
 	return &controllerImpl{
+		Logger:        logger,
 		directoryPath: directoryPath,
 		mapping:       mapping,
 		indices:       indices,
@@ -74,7 +76,7 @@ func (c *controllerImpl) Register(filenames []string) error {
 		}
 
 		c.indices[filename] = index
-		log.Println("New index:", filename)
+		c.Logger.Info().Msgf("new index: %s", filename)
 	}
 	return nil
 }
@@ -119,6 +121,6 @@ func (c *controllerImpl) Delete(filename string, identifier string) error {
 func (c *controllerImpl) Close() {
 	for key, tenantIndex := range c.indices {
 		tenantIndex.Close()
-		log.Println("Closed index:", key)
+		c.Logger.Info().Msgf("closed index: %s", key)
 	}
 }

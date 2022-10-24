@@ -1,12 +1,16 @@
 package rpc_client
 
 import (
-	"log"
+	"os"
 	"net/rpc"
 	"time"
+
+	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
 
 type BleveService struct {
+	Logger        zerolog.Logger
 	Client        *rpc.Client
 	RetryLimit    uint8
 	retryCount    uint8
@@ -15,17 +19,20 @@ type BleveService struct {
 }
 
 func New(addr string, retryLimit uint8, delayDuration time.Duration) *BleveService {
+	logger := log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+
 	if addr == "" {
-		log.Fatal("RPC CLIENT ERROR | BleveService | Address not set for this bleve service!")
+		logger.Fatal().Caller().Msg("address not set for this bleve service")
 	}
 
 	client, err := rpc.DialHTTP("tcp", addr)
 	if err != nil {
-		log.Println("RPC CLIENT ERROR | BleveService | Dialing TCP Error:", err)
+		logger.Fatal().Err(err).Caller().Msg("dialing tcp error")
 		return nil
 	}
 
 	return &BleveService{
+		Logger:        logger,
 		Client:        client,
 		RetryLimit:    retryLimit,
 		retryCount:    0,
@@ -43,7 +50,7 @@ func (s *BleveService) call(serviceMethod string, args interface{}, reply interf
 	if err == rpc.ErrShutdown {
 		if s.retryCount < s.RetryLimit {
 			s.retryCount += 1
-			log.Println("RPC CLIENT ERROR | BleveService | Detected 'connection is shut down' | Retrying #", s.retryCount)
+            s.Logger.Warn().Caller().Msgf("detected 'connection is shut down' so retrying #%d", s.retryCount)
 
 			// We need to apply an artifical delay in case we need to give time
 			// for the server is starting up.
@@ -53,19 +60,20 @@ func (s *BleveService) call(serviceMethod string, args interface{}, reply interf
 			// RPC endpoint, else return with error.
 			client, err := rpc.DialHTTP("tcp", s.addr)
 			if err != nil {
-				log.Println("RPC CLIENT ERROR | BleveService | Detected 'connection is shut down' | Failed reconnecting | err:", err.Error())
+				s.Logger.Error().Err(err).Caller().Msg("detected 'connection is shut down' and failed reconnecting")
 
 				// Note: Use recursion to retry the call.
 				return s.call(serviceMethod, args, reply)
 			}
 
-			log.Println("RPC CLIENT ERROR | BleveService | Detected 'connection is shut down' | Reconnected!")
+			s.Logger.Warn().Caller().Msg("detected 'connection is shut down' so reconnected")
 			s.Client = client
 
 			// Note: Use recursion to retry the call.
 			return s.call(serviceMethod, args, reply)
 		}
-		log.Println("RPC CLIENT ERROR | BleveService | Detected 'connection is shut down' | Too many retries | err:", err.Error())
+
+		s.Logger.Error().Err(err).Caller().Msg("detected 'connection is shut down' and had too many retries")
 		return err
 	}
 

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"log"
 	"net"
 	"net/http"
 	"net/rpc"
@@ -10,6 +9,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 
 	"github.com/bartmika/bleve-server/internal/controller"
@@ -30,24 +31,26 @@ var serveCmd = &cobra.Command{
 }
 
 func doServe(cmd *cobra.Command, args []string) {
+	logger := log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+
 	path, err := os.Executable()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Caller().Msg("")
 	}
 
-	log.Println("Initializing address for", applicationAddress)
-	log.Println("Executing from", path)
-	log.Println("Opening indices at", applicationHomeDirectoryPath)
+	logger.Info().Msgf("initializing address for %s", applicationAddress)
+	logger.Info().Msgf("executing from %s", path)
+	logger.Info().Msgf("opening indices at %s", applicationHomeDirectoryPath)
 
 	tcpAddr, err := net.ResolveTCPAddr("tcp", applicationAddress)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Caller().Msg("")
 	}
 
 	// Initialize our application controller.
-	c, err := controller.New(applicationHomeDirectoryPath)
+	c, err := controller.New(applicationHomeDirectoryPath, logger)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Caller().Msg("")
 	}
 
 	// Integrate our controller with RPC server.
@@ -58,18 +61,18 @@ func doServe(cmd *cobra.Command, args []string) {
 	rpc.Register(&r)
 	rpc.HandleHTTP()
 
-	log.Println("RPC API was initialized.")
+    logger.Info().Msg("rpc server was initialized")
 	l, e := net.ListenTCP("tcp", tcpAddr)
 	if e != nil {
 		l.Close()
-		log.Fatal("RPC API failed to initialize:", e.Error())
+		log.Fatal().Err(err).Caller().Msg("RPC API failed to initialize")
 	}
 
-	log.Println("Started rpc service.")
-	runMainRuntimeLoop(&r, l)
+	logger.Info().Msg("started rpc service.")
+	runMainRuntimeLoop(&r, l, logger)
 }
 
-func runMainRuntimeLoop(r *bleve_rpc.RPC, l *net.TCPListener) {
+func runMainRuntimeLoop(r *bleve_rpc.RPC, l *net.TCPListener, logger zerolog.Logger) {
 	// The following code will attach a background handler to run when the
 	// application detects a shutdown signal.
 	// Special thanks via https://guzalexander.com/2017/05/31/gracefully-exit-server-in-go.html
@@ -86,7 +89,7 @@ func runMainRuntimeLoop(r *bleve_rpc.RPC, l *net.TCPListener) {
 	// Attach the following anonymous function to run on all cases (ex: panic,
 	// termination signal, etc) so we can gracefully shutdown the service.
 	defer func() {
-		stopMainRuntimeLoop(r, l)
+		stopMainRuntimeLoop(r, l, logger)
 	}()
 
 	// Safety net for 'too many open files' issue on legacy code.
@@ -105,10 +108,9 @@ func runMainRuntimeLoop(r *bleve_rpc.RPC, l *net.TCPListener) {
 	http.Serve(l, nil)
 }
 
-func stopMainRuntimeLoop(r *bleve_rpc.RPC, l *net.TCPListener) {
-	log.Printf("Starting graceful shutdown now...")
+func stopMainRuntimeLoop(r *bleve_rpc.RPC, l *net.TCPListener, logger zerolog.Logger) {
+	logger.Info().Msg("starting graceful shutdown now...")
 	r.Controller.Close()
 	l.Close()
-	log.Printf("Terminated TCPListener.")
-	log.Printf("Graceful shutdown finished.")
+	logger.Info().Msg("graceful shutdown finished")
 }

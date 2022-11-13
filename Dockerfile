@@ -5,16 +5,17 @@
 # First pull Golang image
 FROM golang:1.18-alpine as build-env
 
-# Set environment variable
-ENV APP_NAME bleve-server
-ENV CMD_PATH main.go
+# Create a directory for the app
+RUN mkdir /app
 
-# Copy application data into image
-COPY . $GOPATH/src/bartmika/$APP_NAME
-WORKDIR $GOPATH/src/bartmika/$APP_NAME
+# Copy all files from the current directory to the app directory
+COPY . /app
+
+# Set working directory
+WORKDIR /app
 
 # Budild Linux 64bit application
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o /$APP_NAME $GOPATH/src/bartmika/$APP_NAME/$CMD_PATH
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /app/bleve-server .
 
 #-----------#
 # Run Stage #
@@ -22,11 +23,8 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o /$APP_NAME $GOPATH/src/
 
 FROM alpine:3.14
 
-# Set environment variable
-ENV APP_NAME bleve-server
-
-# Copy only required data into this image
-COPY --from=build-env /$APP_NAME .
+# Copy only binary executable into this image
+COPY --from=build-env /app/bleve-server .
 
 # Expose application port
 EXPOSE 8001

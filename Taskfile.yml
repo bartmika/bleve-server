@@ -15,7 +15,7 @@ tasks:
 
   deploy:
     cmds:
-      - docker build -t bartmika/bleve-server:latest .
+      - docker build -f Dockerfile -t bartmika/bleve-server:latest --platform linux/amd64 .
       - docker tag bartmika/bleve-server:latest bartmika/bleve-server:latest
       - docker push bartmika/bleve-server:latest
 

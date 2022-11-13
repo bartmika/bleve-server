@@ -61,7 +61,7 @@ func doServe(cmd *cobra.Command, args []string) {
 	rpc.Register(&r)
 	rpc.HandleHTTP()
 
-    logger.Info().Msg("rpc server was initialized")
+	logger.Info().Msg("rpc server was initialized")
 	l, e := net.ListenTCP("tcp", tcpAddr)
 	if e != nil {
 		l.Close()
